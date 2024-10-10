@@ -5,8 +5,9 @@ import { gapi } from "gapi-script"
 import { useEffect } from 'react'
 import { googleAuth, registerUser } from '../apis/auth'
 import { useState } from 'react'
-import { BsEmojiLaughing, BsEmojiExpressionless } from "react-icons/bs"
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs"
 import { toast } from 'react-toastify';
+import { faker } from '@faker-js/faker';
 import { validUser } from '../apis/auth'
 const defaultData = {
   name: "",
@@ -77,12 +78,26 @@ function Regsiter() {
     }
     isValid()
   }, [])
+
+
+  useEffect(() => {
+    
+    const mockdata = {
+      name: faker.internet.userName(),
+      password: faker.internet.password({ length: 6 })
+    }
+
+    setFormData(mockdata)
+  }, [])
+
+  
   return (
     <div className='bg-[#121418] w-[100vw] h-[100vh] flex justify-center items-center'>
       <div className='w-[90%] sm:w-[400px] pl-0 ml-0 h-[400px] sm:pl-0 sm:ml-9 mt-10 relative'>
-        <div className='absolute -top-7 left-0'>
-          <h3 className=' text-[25px] font-bold tracking-wider text-[#fff]'>填一个用户名和密码就可以聊天了</h3>
-          <p className='text-[#fff] text-[12px] tracking-wider font-medium'>已经注册了 ? <Link className='text-[rgba(0,195,154,1)] underline' to="/login">登陆</Link></p>
+        <div className='absolute -top-12 left-0'>
+          <h4 className=' text-[22px] font-bold tracking-wider text-[#fff]'>已自动为您生成用户名密码</h4>
+          <h4 className=' text-[18px] font-bold tracking-wider text-[#fff]'>您也可以修改</h4>
+          <p className='text-[#fff] text-[12px] tracking-wider font-medium'>已经有用户名了 ? <Link className='text-[rgba(0,195,154,1)] underline' to="/login">登陆</Link></p>
         </div>
         <form className='flex flex-col gap-y-3 mt-[12%]' onSubmit={handleOnSubmit}>
           <div className='flex gap-x-2 w-[100%]'>
@@ -100,7 +115,7 @@ function Regsiter() {
               <BsEmojiExpressionless className='text-[#fff] absolute top-3 right-6 w-[30px] h-[25px]' />
             </button> */}
             {
-              !showPass ? <button type='button'><BsEmojiLaughing onClick={() => setShowPass(!showPass)} className='text-[#fff] absolute top-3 right-4 sm:right-6 w-[30px] h-[25px]' /></button> : <button type='button'> <BsEmojiExpressionless onClick={() => setShowPass(!showPass)} className='text-[#fff] absolute top-3 right-4 sm:right-6 w-[30px] h-[25px]' /></button>
+              !showPass ? <button type='button'><BsFillEyeSlashFill onClick={() => setShowPass(!showPass)} className='text-[#fff] absolute top-3 right-4 sm:right-6 w-[30px] h-[25px]' /></button> : <button type='button'> <BsFillEyeFill onClick={() => setShowPass(!showPass)} className='text-[#fff] absolute top-3 right-4 sm:right-6 w-[30px] h-[25px]' /></button>
             }
 
 
