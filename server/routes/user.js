@@ -9,6 +9,7 @@ import {
   updateInfo,
   getUserById,
 } from '../controllers/user.js';
+
 import { Auth } from '../middleware/user.js';
 const router = express.Router();
 router.post('/auth/register', register);

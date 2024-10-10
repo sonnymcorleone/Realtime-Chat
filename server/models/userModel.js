@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,
@@ -43,8 +43,11 @@ userSchema.pre('save', async function (next) {
 });
 userSchema.methods.generateAuthToken = async function () {
   try {
+    const ADMIN_USER_ID = process.env.ADMIN_USER_ID;
+    console.log(ADMIN_USER_ID)
+    console.log(this._id)
     let token = jwt.sign(
-      { id: this._id, email: this.email },
+      { id: this._id, email: this.email, role: this._id?.toString() === ADMIN_USER_ID ? "admin" : "guest" },
       process.env.SECRET,
       {
         expiresIn: '24h',

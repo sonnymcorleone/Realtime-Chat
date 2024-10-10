@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { jwtDecode } from "jwt-decode";
 import Model from '../components/Model';
 import { BsEmojiSmile, BsFillEmojiSmileFill } from "react-icons/bs"
 import { fetchMessages, sendMessage } from '../apis/messages';
@@ -23,6 +24,7 @@ function Chat(props) {
   const [message, setMessage] = useState("")
   const [messages, setMessages] = useState([])
   const [socketConnected, setSocketConnected] = useState(false)
+  const [userRole, setUserRole] = useState("guest")
   const [typing, setTyping] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -92,6 +94,15 @@ function Chat(props) {
     }
     isValid()
   }, [])
+
+  useEffect(() => {
+    let token = localStorage.getItem("userToken")
+    let jwtObj = jwtDecode(token);
+    if(jwtObj.role){
+      setUserRole(jwtObj.role)
+    }
+  }, [])
+
   if (loading) {
     return <div className={props.className}>
       <Loading />

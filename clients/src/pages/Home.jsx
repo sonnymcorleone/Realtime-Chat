@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
+import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from 'react-redux'
 import { searchUsers, validUser } from '../apis/auth'
 import { setActiveUser } from '../redux/activeUserSlice'
@@ -24,11 +25,12 @@ import Search from '../components/group/Search'
 function Home() {
   const dispatch = useDispatch()
   const { showProfile, showNotifications } = useSelector((state) => state.profile)
-  const { notifications } = useSelector((state) => state.chats)
+  const { notifications, chats } = useSelector((state) => state.chats)
   const { activeUser } = useSelector((state) => state)
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [search, setSearch] = useState("")
+  const [userRole, setUserRole] = useState("guest")
 
   const handleSearch = async (e) => {
     setSearch(e.target.value)
@@ -63,6 +65,30 @@ function Home() {
     isValid()
 
   }, [dispatch, activeUser])
+
+  useEffect(() => {
+    let token = localStorage.getItem("userToken")
+    let jwtObj = jwtDecode(token);
+    if(jwtObj.role){
+      setUserRole(jwtObj.role)
+    }
+  }, [])
+
+  useEffect(() => {
+    if(userRole === 'guest'){
+      dispatch(fetchChats())
+    }
+    
+  }, [userRole])
+
+  useEffect(() => {
+    if(userRole === 'guest' && chats?.[0]){
+      dispatch(setActiveChat(chats[0]))
+    }
+  }, [chats])
+
+  
+
 
 
   return (
@@ -125,29 +151,31 @@ function Home() {
 
                 <div>
 
-                  <div className='-mt-6 relative pt-6 px-4'>
-                    <form onSubmit={(e) => e.preventDefault()}>
+                  {userRole === "admin" &&  (
+                    <div className='-mt-6 relative pt-6 px-4'>
+                      <form onSubmit={(e) => e.preventDefault()}>
 
-                      <input onChange={handleSearch} className='w-[99.5%] bg-[#f6f6f6] text-[#111b21] tracking-wider pl-9 py-[8px] rounded-[9px] outline-0' type="text" name="search" placeholder="Search" />
+                        <input onChange={handleSearch} className='w-[99.5%] bg-[#f6f6f6] text-[#111b21] tracking-wider pl-9 py-[8px] rounded-[9px] outline-0' type="text" name="search" placeholder="Search" />
 
-                    </form>
+                      </form>
 
-                    <div className='absolute top-[36px] left-[27px]'>
-                      <BsSearch style={{ color: "#c4c4c5" }} />
+                      <div className='absolute top-[36px] left-[27px]'>
+                        <BsSearch style={{ color: "#c4c4c5" }} />
+                      </div>
+                      <Group />
+
+                      <div style={{ display: search ? "" : "none" }} className='h-[100vh] absolute z-10 w-[100%] left-[0px] top-[70px] bg-[#fff] flex flex-col gap-y-3 pt-3 px-4'>
+                        <Search searchResults={searchResults} isLoading={isLoading} handleClick={handleClick} search={search} />
+
+                      </div>
                     </div>
-                    <Group />
-
-                    <div style={{ display: search ? "" : "none" }} className='h-[100vh] absolute z-10 w-[100%] left-[0px] top-[70px] bg-[#fff] flex flex-col gap-y-3 pt-3 px-4'>
-                      <Search searchResults={searchResults} isLoading={isLoading} handleClick={handleClick} search={search} />
-
-                    </div>
-                  </div>
-
-
+                  )}
+                  
                   <Contacts />
 
 
                 </div>
+                
 
 
               </div> : <Profile className="min-w-[100%] sm:min-w-[360px] h-[100vh] bg-[#fafafa] shodow-xl relative" />

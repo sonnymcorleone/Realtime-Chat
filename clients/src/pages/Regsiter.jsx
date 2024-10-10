@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { GoogleLogin } from "react-google-login"
+// import { GoogleLogin } from "react-google-login"
 import { gapi } from "gapi-script"
 import { useEffect } from 'react'
 import { googleAuth, registerUser } from '../apis/auth'
@@ -9,9 +9,7 @@ import { BsEmojiLaughing, BsEmojiExpressionless } from "react-icons/bs"
 import { toast } from 'react-toastify';
 import { validUser } from '../apis/auth'
 const defaultData = {
-  firstname: "",
-  lastname: "",
-  email: "",
+  name: "",
   password: ""
 }
 function Regsiter() {
@@ -25,7 +23,8 @@ function Regsiter() {
   const handleOnSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    if (formData.email.includes("@") && formData.password.length > 6) {
+    // if (formData.email.includes("@") && formData.password.length > 6) {
+    if (formData.name) {
       const { data } = await registerUser(formData)
       if (data?.token) {
         localStorage.setItem("userToken", data.token)
@@ -82,19 +81,19 @@ function Regsiter() {
     <div className='bg-[#121418] w-[100vw] h-[100vh] flex justify-center items-center'>
       <div className='w-[90%] sm:w-[400px] pl-0 ml-0 h-[400px] sm:pl-0 sm:ml-9 mt-10 relative'>
         <div className='absolute -top-7 left-0'>
-          <h3 className=' text-[25px] font-bold tracking-wider text-[#fff]'>Register</h3>
-          <p className='text-[#fff] text-[12px] tracking-wider font-medium'>Have Account ? <Link className='text-[rgba(0,195,154,1)] underline' to="/login">Sign in</Link></p>
+          <h3 className=' text-[25px] font-bold tracking-wider text-[#fff]'>填一个用户名和密码就可以聊天了</h3>
+          <p className='text-[#fff] text-[12px] tracking-wider font-medium'>已经注册了 ? <Link className='text-[rgba(0,195,154,1)] underline' to="/login">登陆</Link></p>
         </div>
         <form className='flex flex-col gap-y-3 mt-[12%]' onSubmit={handleOnSubmit}>
           <div className='flex gap-x-2 w-[100%]'>
-            <input onChange={handleOnChange} className='bg-[#222222] h-[50px] pl-3 text-[#ffff] w-[49%] sm:w-[47%]' type="text" name="firstname" placeholder='First Name' value={formData.firstname} required />
-            <input onChange={handleOnChange} className='bg-[#222222] h-[50px] pl-3 text-[#ffff] w-[49%] sm:w-[47%]' type="text" name="lastname" placeholder='Last Name' value={formData.lastname} required />
+            <input onChange={handleOnChange} className='bg-[#222222] h-[50px] pl-3 text-[#ffff] w-[100%] sm:w-[96.3%]' type="text" name="name" placeholder='用户名' value={formData.name} required />
+            {/* <input onChange={handleOnChange} className='bg-[#222222] h-[50px] pl-3 text-[#ffff] w-[49%] sm:w-[47%]' type="text" name="lastname" placeholder='Last Name' value={formData.lastname} required /> */}
           </div>
-          <div>
+          {/* <div>
             <input onChange={handleOnChange} className='bg-[#222222] h-[50px] pl-3 text-[#ffff] w-[100%] sm:w-[96.3%]' type="email" name="email" placeholder="Email" value={formData.email} required />
-          </div>
+          </div> */}
           <div className='relative flex flex-col gap-y-3'>
-            <input onChange={handleOnChange} className='bg-[#222222] h-[50px] pl-3 text-[#ffff] w-[100%] sm:w-[96.3%]' type={showPass ? "text" : "password"} name="password" placeholder="Password" value={formData.password} required />
+            <input onChange={handleOnChange} className='bg-[#222222] h-[50px] pl-3 text-[#ffff] w-[100%] sm:w-[96.3%]' type={showPass ? "text" : "password"} name="password" placeholder="密码" value={formData.password} required />
 
 
             {/* <button onCli type="button">
@@ -111,9 +110,9 @@ function Regsiter() {
 
               <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_h9kds1my.json" background="transparent" speed="1" style={{ width: "200px", height: "160px" }} loop autoplay></lottie-player>
             </div>
-            <p style={{ display: isLoading ? "none" : "block" }} className='test-[#fff]'>Regsiter</p>
+            <p style={{ display: isLoading ? "none" : "block" }} className='test-[#fff]'>开始聊天</p>
           </button>
-          <p className='text-[#fff] text-center sm:-ml-8'>/</p>
+          {/* <p className='text-[#fff] text-center sm:-ml-8'>/</p>
           <GoogleLogin
             clientId={process.env.REACT_APP_CLIENT_ID}
             render={(renderProps) => (
@@ -125,7 +124,7 @@ function Regsiter() {
             onSuccess={googleSuccess}
             onFailure={googleFailure}
             cookiePolicy={'single_host_origin'}
-          />
+          /> */}
         </form>
       </div>
     </div>

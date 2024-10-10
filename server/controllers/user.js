@@ -1,16 +1,30 @@
 import user from '../models/userModel.js';
+import Chat from '../models/chatModel.js';
 import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
+
 export const register = async (req, res) => {
-  const { firstname, lastname, email, password } = req.body;
+  const { name, email, password } = req.body;
   try {
-    const existingUser = await user.findOne({ email });
+    const existingUser = await user.findOne({ name });
     if (existingUser)
       return res.status(400).json({ error: 'User already Exits' });
-    const fullname = firstname + ' ' + lastname;
-    const newuser = new user({ email, password, name: fullname });
+    // const fullname = firstname + ' ' + lastname;
+    const newuser = new user({ password, name });
     const token = await newuser.generateAuthToken();
     await newuser.save();
+
+
+
+    // add admin to chat for new register user
+    const ADMIN_USER_ID = process.env.ADMIN_USER_ID
+    let data = {
+      chatName: 'sender',
+      users: [ADMIN_USER_ID, newuser._id],
+      isGroup: false,
+    };
+    await Chat.create(data);
+
     res.json({ message: 'success', token: token });
   } catch (error) {
     console.log('Error in register ' + error);
@@ -18,9 +32,9 @@ export const register = async (req, res) => {
   }
 };
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, password } = req.body;
   try {
-    const valid = await user.findOne({ email });
+    const valid = await user.findOne({ name });
     if (!valid) res.status(200).json({ message: 'User dont exist' });
     const validPassword = await bcrypt.compare(password, valid.password);
     if (!validPassword) {
@@ -107,7 +121,7 @@ export const searchUsers = async (req, res) => {
       }
     : {};
 
-  const users = await user.find(search).find({ _id: { $ne: req.rootUserId } });
+  const users = await user.find(search).find({ _id: { $ne: req.rootUserId } }).select('-password');
   res.status(200).send(users);
 };
 export const getUserById = async (req, res) => {

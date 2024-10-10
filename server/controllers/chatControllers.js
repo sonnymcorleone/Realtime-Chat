@@ -18,7 +18,7 @@ export const accessChats = async (req, res) => {
     select: 'name email profilePic',
   });
   if (chatExists.length > 0) {
-    res.status(200).send(chatExists[0]);
+    res?.status(200).send(chatExists[0]);
   } else {
     let data = {
       chatName: 'sender',
@@ -31,9 +31,9 @@ export const accessChats = async (req, res) => {
         'users',
         '-password'
       );
-      res.status(200).json(chat);
+      res?.status(200).json(chat);
     } catch (error) {
-      res.status(500).send(error);
+      res?.status(500).send(error);
     }
   }
 };
