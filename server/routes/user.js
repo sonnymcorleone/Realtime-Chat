@@ -12,6 +12,9 @@ import {
 
 import { Auth } from '../middleware/user.js';
 const router = express.Router();
+router.get('/', (req, res) => {
+  res.send('Hello World!')
+});
 router.post('/auth/register', register);
 router.post('/auth/login', login);
 router.get('/auth/valid', Auth, validUser);
