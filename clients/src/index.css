@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+
+@media screen and (max-width: 640px) {
+  .show-active-chat .list-section{
+    display: none;
+  }
+  .show-active-chat .chat-page{
+    width: 100%;
+    min-width: inherit;
+  }
+  
+  .show-active-chat .message-input-section{
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .show-chat-list .chat-page{
+    display: none;
+  }
+  .show-chat-list .list-section{
+    width: 100%;
+  }
+}
+
+
+

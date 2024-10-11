@@ -13,9 +13,8 @@ import Chat from './Chat'
 import Profile from "../components/Profile"
 import { acessCreate } from "../apis/chat.js"
 import "./home.css"
-import { fetchChats, setNotifications } from '../redux/chatsSlice'
+import { fetchChats, setNotifications, setActiveChat } from '../redux/chatsSlice'
 import { getSender } from '../utils/logics'
-import { setActiveChat } from '../redux/chatsSlice'
 import Group from '../components/Group'
 import Contacts from '../components/Contacts'
 import { Effect } from "react-notification-badge"
@@ -25,7 +24,7 @@ import Search from '../components/group/Search'
 function Home() {
   const dispatch = useDispatch()
   const { showProfile, showNotifications } = useSelector((state) => state.profile)
-  const { notifications, chats } = useSelector((state) => state.chats)
+  const { notifications, chats, activeChat } = useSelector((state) => state.chats)
   const { activeUser } = useSelector((state) => state)
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -86,9 +85,9 @@ function Home() {
       dispatch(setActiveChat(chats[0]))
     }
   }, [chats])
-
   
 
+  
 
 
   return (
@@ -96,10 +95,10 @@ function Home() {
 
       <div className="bg-[#282C35!] scrollbar-hide z-10 h-[100vh]  lg:w-[90%] lg:mx-auto overflow-y-hidden shadow-2xl">
 
-        <div className='flex'>
+        <div className={`flex ${activeChat._id ? "show-active-chat" : "show-chat-list"}`}>
           {
             !showProfile ?
-              <div className="md:flex md:flex-col min-w-[360px] h-[100vh] md:h-[98.6vh] bg-[#ffff] relative">
+              <div className="md:flex md:flex-col min-w-[360px] h-[100vh] md:h-[98.6vh] bg-[#ffff] relative list-section">
 
                 <div className='h-[61px] px-4'>
                   <div className='flex'>

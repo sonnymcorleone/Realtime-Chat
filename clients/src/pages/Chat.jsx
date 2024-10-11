@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import MessageHistory from '../components/MessageHistory';
 import io from "socket.io-client"
 import "./home.css"
-import { fetchChats, setNotifications } from '../redux/chatsSlice';
+import { fetchChats, setNotifications, setActiveChat } from '../redux/chatsSlice';
 import Loading from '../components/ui/Loading';
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
@@ -118,6 +118,9 @@ function Chat(props) {
         activeChat ?
           <div className={props.className}>
             <div className='flex justify-between items-center px-5 bg-[#ffff] w-[100%]'>
+              <button 
+                onClick={(e) => dispatch(setActiveChat(''))} 
+                className='bg-[#f8f9fa] border-[1px] border-[#d4d4d4] text-[14px] px-2 py-[3px] text-[#9e9e9e] font-medium rounded-[7px] -mt-1'>返回</button>
               <div className='flex items-center gap-x-[10px]'>
                 <div className='flex flex-col items-start justify-center'>
                   <h5 className='text-[17px] text-[#2b2e33] font-bold tracking-wide'>{getChatName(activeChat, activeUser)}</h5>
@@ -138,7 +141,7 @@ function Chat(props) {
 
               </div>
             </div>
-            <div className='absolute left-[31%] bottom-[8%]'>
+            <div className='absolute left-[31%] bottom-[8%] message-input-section'>
               {
                 showPicker && <Picker data={data} onEmojiSelect={(e) => setMessage(message + e.native)} />
               }
