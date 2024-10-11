@@ -1,4 +1,5 @@
 import express from 'express';
+import morgan from 'morgan';
 import dotenv from 'dotenv/config';
 import mongoDBConnect from './mongoDB/connection.js';
 import mongoose from 'mongoose';
@@ -16,6 +17,21 @@ const corsConfig = {
 };
 const PORT=process.env.PORT || 8000
 
+// 自定义日志格式
+morgan.token('response-time', (req, res) => {
+  return `${Date.now() - req._startAt[0]}ms`;
+});
+
+app.use((req, res, next) => {
+  req._startAt = process.hrtime();
+  res.on('finish', () => {
+      const durationInMilliseconds = process.hrtime(req._startAt)[1] / 1000000;
+      console.log(`Response time: ${durationInMilliseconds}ms`);
+  });
+  next();
+});
+
+app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors(corsConfig));
