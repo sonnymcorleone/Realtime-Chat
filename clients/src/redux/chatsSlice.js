@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { throttle } from 'lodash';
 import { fetchAllChats } from '../apis/chat';
 const initialState = {
   chats: [],
@@ -7,9 +8,10 @@ const initialState = {
   isLoading: false,
   notifications: [],
 };
+const throttleFetchAllChats = throttle(fetchAllChats, 1500);
 export const fetchChats = createAsyncThunk('redux/chats', async () => {
   try {
-    const data = await fetchAllChats();
+    const data = await throttleFetchAllChats();
     return data;
   } catch (error) {
     toast.error('Something Went Wrong!Try Again');
