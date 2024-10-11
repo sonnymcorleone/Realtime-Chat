@@ -20,6 +20,7 @@ const ENDPOINT = process.env.REACT_APP_SERVER_URL
 let socket, selectedChatCompare;
 
 const throttledFetchChats = throttle(fetchChats, 1000);
+const throttledFetchMessages = throttle(fetchMessages, 1000);
 
 function Chat(props) {
   const { activeChat, notifications } = useSelector((state) => state.chats)
@@ -62,7 +63,7 @@ function Chat(props) {
     const fetchMessagesFunc = async () => {
       if (activeChat) {
         setLoading(true)
-        const data = await fetchMessages(activeChat._id)
+        const data = await throttledFetchMessages(activeChat._id)
         setMessages(data)
         socket.emit("join room", activeChat._id)
         setLoading(false)
