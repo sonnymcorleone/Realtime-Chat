@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { throttle } from 'lodash';
 import { jwtDecode } from "jwt-decode";
 import Model from '../components/Model';
 import { BsEmojiSmile, BsFillEmojiSmileFill } from "react-icons/bs"
@@ -17,6 +18,8 @@ import Typing from '../components/ui/Typing';
 import { validUser } from '../apis/auth';
 const ENDPOINT = process.env.REACT_APP_SERVER_URL
 let socket, selectedChatCompare;
+
+const throttledFetchChats = throttle(fetchChats, 1000);
 
 function Chat(props) {
   const { activeChat, notifications } = useSelector((state) => state.chats)
@@ -38,7 +41,7 @@ function Chat(props) {
       const data = await sendMessage({ chatId: activeChat._id, message })
       socket.emit("new message", data)
       setMessages([...messages, data])
-      dispatch(fetchChats())
+      dispatch(throttledFetchChats())
     }
   }
 
@@ -81,7 +84,7 @@ function Chat(props) {
       else {
         setMessages([...messages, newMessageRecieved])
       }
-      dispatch(fetchChats())
+      dispatch(throttledFetchChats())
     })
   })
   useEffect(() => {
